@@ -1,0 +1,7 @@
+OSC addresses:
+
+/video/load,i        # video files will be numbered, opens file i
+/video/play,i        # either 0 or 1, starts/stops playback
+/video/reverse,i     # either 0 or 1, 1 reverses playback
+/video/speed,i       # sets playback speed in fps
+
