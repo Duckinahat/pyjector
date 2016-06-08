@@ -8,18 +8,21 @@ import gi
 gi.require_version('Gst', '1.0')
 from gi.repository import GObject, Gst
 
+from rtpsink import rtpsink
 
 class TrickPlayer():
 
     def __init__(self):
-        self.file = ""
+        self.file = "/home/nicola/mt1.mp4"
         self.pipeline = None
         self.video_sink = None
         self.playing = False
         self.rate = 1.0
 
-    def set_pipeline(self,pipeline="playbin uri=file:///home/nicola/mt1.mp4"):
-        self.pipeline = Gst.parse_launch(pipeline)
+    def set_pipeline(self):
+        self.pipeline = Gst.parse_launch("playbin uri=file://%s" % self.file)
+        videosink = Gst.ElementFactory.make("autovideosink")
+        self.pipeline.set_property('video_sink', videosink)
 
     def __send_seek_event(self):
         fmat = Gst.Format.TIME
@@ -53,6 +56,12 @@ class TrickPlayer():
         self.video_sink.send_event(seek_event)
 
         print("Current rate: %d" % self.rate)
+
+    def change_file(self, newfile):
+        self.file = newfile
+        self.pipeline.set_state(Gst.State.NULL)
+        self.pipeline.set_property('uri', "file://%s" % newfile)
+        self.pipeline.set_state(Gst.State.PLAYING if self.playing else Gst.State.PAUSED)
 
     def cleanup(self):
         self.pipeline.set_state(Gst.State.NULL)

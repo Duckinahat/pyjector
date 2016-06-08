@@ -3,6 +3,7 @@
 import sys
 import os
 import logging
+import queue
 
 import gi
 gi.require_version('Gst', '1.0')
@@ -24,6 +25,8 @@ def handle_keyboard(player):
         player.reverse()
     elif (inp == 'n'):
         player.step_frame()
+    elif (inp == 'c'):
+    	player.change_file("/home/nicola/Desktop/deepdream/t2.mp4")
     elif (inp == 'q'):
         return False
     return True
@@ -39,4 +42,3 @@ if __name__=='__main__':
     while (loop):
         loop = handle_keyboard(player)
     exit(0)
-    
