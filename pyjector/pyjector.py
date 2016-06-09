@@ -9,13 +9,13 @@ import gi
 gi.require_version('Gst', '1.0')
 from gi.repository import GObject, Gst
 
-from TrickPlayer import TrickPlayer
+from trickplayer import TrickPlayer
 
 
 def handle_keyboard(player):
     inp = input("Enter command: ")
     if (inp == 'p'):
-        player.play_pause()
+        player.pause_play()
     elif (inp == 's'):
         try:
             player.set_speed(float(input("Enter speed: ")))
@@ -25,6 +25,10 @@ def handle_keyboard(player):
         player.reverse()
     elif (inp == 'n'):
         player.step_frame()
+    elif (inp == 'h'):
+        player.update_color_channel("HUE", -0.1)
+    elif (inp == 'H'):
+        player.update_color_channel("HUE", 0.1)
     elif (inp == 'c'):
     	player.change_file("/home/nicola/Desktop/deepdream/t2.mp4")
     elif (inp == 'q'):
