@@ -75,11 +75,18 @@ class GTK_Main:
         b_con.connect("clicked", self.on_slider_reset, s_con)
         b_sat = Gtk.Button(label="Saturation")
         b_sat.connect("clicked", self.on_slider_reset, s_sat)
-        #s_speed = Gtk.Scale.new_with_range(0,1,2,.01)
-        #s_speed.set_hexpand(True)
-        #s_speed.set_value(1)
-        #s_speed.connect("value_changed", self.on_speed_move)
-        #self.speedmult = 1.0
+        s_speed = Gtk.Scale.new_with_range(0,1,2,.01)
+        s_speed.set_hexpand(True)
+        s_speed.set_value(1)
+        s_speed.connect("value_changed", self.on_speed_move)
+        self.speedmult = 1.0
+        b_speed = Gtk.Button(label="Speed")
+        b_speed.connect("clicked", self.on_speed_reset, s_speed)
+        b_dbl = Gtk.Button(label="x2")
+        b_dbl.connect("clicked", self.on_speed_mult, s_speed, 2.0)
+        b_hlf = Gtk.Button(label="/2")
+        b_hlf.connect("clicked", self.on_speed_mult, s_speed, 0.5)
+        self.l_speed = Gtk.Label("Speed: %f" % (self.speedmult*s_speed.get_value()))
         
         g_files = Gtk.Grid()
         self.filenum = 0
@@ -100,16 +107,20 @@ class GTK_Main:
         grid.attach(b_loop0, 0,1,1,1)
         grid.attach(b_loop1, 1,1,1,1)
         grid.attach(b_loop2, 2,1,1,1)
-        #grid.attach(s_speed, 0,2,4,1)
-        grid.attach(s_hue,0,4,1,4)
-        grid.attach(s_brt,1,4,1,4)
-        grid.attach(s_con,2,4,1,4)
-        grid.attach(s_sat,3,4,1,4)
-        grid.attach(b_hue,0,3,1,1)
-        grid.attach(b_brt,1,3,1,1)
-        grid.attach(b_con,2,3,1,1)
-        grid.attach(b_sat,3,3,1,1)
-        grid.attach(g_files, 4,3,16,16)
+        grid.attach(b_speed, 0,2,1,1)
+        grid.attach(b_dbl,1,2,1,1)
+        grid.attach(b_hlf,2,2,1,1)
+        grid.attach(self.l_speed,3,2,1,1)
+        grid.attach(s_speed, 0,3,4,1)
+        grid.attach(s_hue,0,5,1,4)
+        grid.attach(s_brt,1,5,1,4)
+        grid.attach(s_con,2,5,1,4)
+        grid.attach(s_sat,3,5,1,4)
+        grid.attach(b_hue,0,4,1,1)
+        grid.attach(b_brt,1,4,1,1)
+        grid.attach(b_con,2,4,1,1)
+        grid.attach(b_sat,3,4,1,1)
+        grid.attach(g_files, 4,0,16,16)
         
         self.player = TrickPlayer()
         self.player.run()
@@ -163,6 +174,16 @@ class GTK_Main:
         
     def on_speed_move(self, slider):
         self.player.set_speed(slider.get_value()*self.speedmult)
+        self.l_speed.set_text("Speed: %f" % (self.speedmult*slider.get_value()))
+        
+    def on_speed_reset(self, button, slider):
+        slider.set_value(1)
+        self.speedmult = 1
+        self.on_speed_move(slider)
+        
+    def on_speed_mult(self, button, slider, mult):
+        self.speedmult *= mult
+        self.on_speed_move(slider)
 
 if __name__=='__main__':
     GObject.threads_init()

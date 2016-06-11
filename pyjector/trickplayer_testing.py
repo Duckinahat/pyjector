@@ -50,7 +50,6 @@ class TrickPlayer():
     def __send_seek_event(self):
         fmat = Gst.Format.TIME
         ret, position = self.pipeline.query_position(fmat)
-        print(position)
         if (not ret):
             print("Unable to retrieve current position.")
             return 
@@ -71,6 +70,7 @@ class TrickPlayer():
                 -1,
                 Gst.SeekType.SET,
                 position)
+                
         self.video_sink.send_event(seek_event)
         logger.info("Current rate: %d", self.rate)
 
